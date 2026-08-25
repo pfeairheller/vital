@@ -12,7 +12,7 @@ The follow table contains the schema for the GLEIF vLEI Ecosystem as well as pro
 
 | Schema Name                                               | Schema SAID                                  | OOBI (link) to Verifiable Schema                                               | Version | Status    | Notes |
 |-----------------------------------------------------------|----------------------------------------------|--------------------------------------------------------------------------------|---------|-----------|-------|
-| Qualified vLEI Issuer Credential                          | EBfdlu8R27Fbx-ehrqwImnK-8Cm79sqbAQ4MmvEAYqao | https://weboftrust.github.io/oobi/EBfdlu8R27Fbx-ehrqwImnK-8Cm79sqbAQ4MmvEAYqao | 1.0.0   | Published |       |
+| Qualified&nbsp;vLEI&nbsp;Issuer&nbsp;Credential                     | EBfdlu8R27Fbx-ehrqwImnK-8Cm79sqbAQ4MmvEAYqao | https://weboftrust.github.io/oobi/EBfdlu8R27Fbx-ehrqwImnK-8Cm79sqbAQ4MmvEAYqao | 1.0.0   | Published |       |
 | Legal Entity vLEI Credential                              | ENPXp1vQzRF6JwIuS-mp2U8Uf1MoADoP_GqQ62VsDZWY | https://weboftrust.github.io/oobi/ENPXp1vQzRF6JwIuS-mp2U8Uf1MoADoP_GqQ62VsDZWY | 1.0.0   | Published |       |
 | Legal Entity Official Organizational Role vLEI Credential | EBNaNu-M9P5cgrnfl2Fvymy4E_jvxxyjb70PRtiANlJy | https://weboftrust.github.io/oobi/EBNaNu-M9P5cgrnfl2Fvymy4E_jvxxyjb70PRtiANlJy | 1.0.0   | Published |       |
 | OOR Authorization vLEI Credential                         | EKA57bKBKxr_kN7iN5i7lMUxpMG-s19dRcmov1iDxz-E | https://weboftrust.github.io/oobi/EKA57bKBKxr_kN7iN5i7lMUxpMG-s19dRcmov1iDxz-E | 1.0.0   | Published |       |
