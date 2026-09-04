@@ -1,0 +1,14 @@
+{
+  "QualificationAgentvLEICredential": {},
+  "LegalEntitySubdivisionvLEICredential": {},
+  "LERAuthorizationvLEICredential": {
+    "subdivision": "LegalEntitySubdivisionvLEICredential"
+  },
+  "LegalEntityRolevLEICredential": {
+    "auth": "LERAuthorizationvLEICredential"
+  },
+  "ConnectionAuthorizationvLEICredential": {
+    "grantee": "LegalEntityRolevLEICredential",
+    "grantor": "LegalEntityRolevLEICredential"
+  }
+}
