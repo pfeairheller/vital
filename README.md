@@ -25,22 +25,22 @@ Note: <i>Files are available in the schema folder of the repository, keyed by SA
 
 The following table contains the open source repositories available for participants in the VITAL Initiative:
 
-| Repository Name   | Description                                                 | Link                                            | Language/Stack   | Purpose                                                      |
-|-------------------|-------------------------------------------------------------|-------------------------------------------------|------------------|--------------------------------------------------------------|
-| Castellan         | Enterprise credential management server                     | https://github.com/healthKERI/castellan         | Python           | Backend server for managing KERI identifiers and credentials |
-| Castellan Plugin  | Enterprise credential management UI (for Locksmith)         | https://github.com/healthKERI/castellan-plugin  | Python / PySide6 | Client library for interacting with Castellan servers        |
-| Sentinel          | Local watcher framework and library                         | https://github.com/healthKERI/sentinel          | Python           | Local watcher framework for managing keystate updates        |
-| KERI              | Key Event Receipt Infrastructure core                       | https://github.com/WebofTrust/keripy            | Python           | Core KERI protocol implementation                            |
-| libkeri           | Key Event Receipt Infrastructure core                       | https://github.com/healthKERI/libkeri           | Rust             | Core KERI protocol implementation                            |
-| Locksmith         | Keys at the Edge KERI Wallet                                | https://github.com/keri-foundation/locksmith    | Python / PySide6 | Server for issuing and managing vLEI credentials             |
-| Witness Server    | Deployable KERI Witnesses                                   | https://github.com/keri-foundation/witness-hk   | Python           | Server for issuing and managing vLEI credentials             |
-| Watcher Server    | Deployable KERI Watchers                                    | https://github.com/keri-foundation/watcher-hk   | Python           | Server for issuing and managing vLEI credentials             |
-| ACDC Auth Arbiter | Credential arbiter for presentation and issuance            | https://github.com/healthKERI/acdc-auth-arbiter | Python           | Managing automated issuance of Use Case credentials          |
-| ACDC Auth Server  | ACDC/OAuth2 Authorization Server and OIDC Identity Provider | https://github.com/healthKERI/acdc-auth-server  | Python           | Implementation of UDAP inspired vLEI OAuth identity provider |
-| ACDC Auth Client  | ACDC OAuth2 Client                                          | https://github.com/healthKERI/acdc-auth-client  | Python           | Implementation of UDAP inspired vLEI OAuth client            |
+| Repository Name  | Description                                                 | Link                                           | Language/Stack   | Purpose                                                      |
+|------------------|-------------------------------------------------------------|------------------------------------------------|------------------|--------------------------------------------------------------|
+| Castellan        | Enterprise credential management server                     | https://github.com/healthKERI/castellan        | Python           | Backend server for managing KERI identifiers and credentials |
+| Castellan Plugin | Enterprise credential management UI (for Locksmith)         | https://github.com/healthKERI/castellan-plugin | Python / PySide6 | Client library for interacting with Castellan servers        |
+| Sentinel         | Local watcher framework and library                         | https://github.com/healthKERI/sentinel         | Python           | Local watcher framework for managing keystate updates        |
+| KERI             | Key Event Receipt Infrastructure core                       | https://github.com/WebofTrust/keripy           | Python           | Core KERI protocol implementation                            |
+| libkeri          | Key Event Receipt Infrastructure core                       | https://github.com/healthKERI/libkeri          | Rust             | Core KERI protocol implementation                            |
+| Locksmith        | Keys at the Edge KERI Wallet                                | https://github.com/keri-foundation/locksmith   | Python / PySide6 | Server for issuing and managing vLEI credentials             |
+| Witness Server   | Deployable KERI Witnesses                                   | https://github.com/keri-foundation/witness-hk  | Python           | Server for issuing and managing vLEI credentials             |
+| Watcher Server   | Deployable KERI Watchers                                    | https://github.com/keri-foundation/watcher-hk  | Python           | Server for issuing and managing vLEI credentials             |
+| Echelon Server   | ACDC/OAuth2 Authorization Server and OIDC Identity Provider | https://github.com/healthKERI/echelon-server   | Python           | Implementation of UDAP inspired vLEI OAuth identity provider |
+| Echelon Client   | ACDC OAuth2 Client                                          | https://github.com/healthKERI/echelon-client   | Python           | Implementation of UDAP inspired vLEI OAuth client            |
 
 Additional resources and documentation can be found at:
 
+- vLEI Credential Hierarchy Graph with Proposed Credentials Inline [docs/Credential-Hierarchy-Graph.md](docs/Credential-Hierarchy-Graph.md)
 - KERI Documentation: https://keri.one
 - WebOfTrust GitHub Organization: https://github.com/WebOfTrust
 - GLEIF vLEI
