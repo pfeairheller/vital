@@ -6,5 +6,8 @@
   },
   "LegalEntitySubunitRolevLEICredential": {
     "auth": "LESRAuthorizationvLEICredential"
+  },
+  "LegalEntitySubunitAgentvLEICredential": {
+    "role": "LegalEntitySubunitRolevLEICredential"
   }
 }
