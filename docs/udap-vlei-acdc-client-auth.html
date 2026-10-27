@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>UDAP vLEI ACDC Client Authentication</title>
+
+  <!-- Bootstrap (close to the look-and-feel used across UDAP.org pages) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <style>
+    body { padding-top: 70px; }
+    .udap-banner { margin-top: 10px; margin-bottom: 10px; }
+    .udap-banner h2 { font-weight: 600; margin-top: 0; }
+    .spec-title { font-size: 34px; font-weight: 700; margin-top: 0; }
+    .spec-meta { color: #555; margin-bottom: 20px; }
+    pre, code { font-family: Menlo, Monaco, Consolas, "Courier New", monospace; }
+    pre { background: #f8f8f8; border: 1px solid #e5e5e5; padding: 12px; }
+    h2 { margin-top: 28px; }
+    h3 { margin-top: 22px; }
+    hr { border-top: 1px solid #e5e5e5; }
+    .footer { margin-top: 40px; padding: 25px 0; color:#666; border-top: 1px solid #eee;}
+  </style>
+</head>
+
+<body>
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#udapNavbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">UDAP</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="udapNavbar">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Profiles <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="https://www.udap.org/udap-jwt-client-auth.html">JWT Client Authentication</a></li>
+            <li><a href="https://www.udap.org/udap-user-auth.html">Tiered OAuth</a></li>
+            <li><a href="https://www.udap.org/udap-dynamic-client-registration.html">Dynamic Client Registration</a></li>
+            <li><a href="https://www.udap.org/udap-tls-client-auth.html">TLS Client Authentication</a></li>
+            <li><a href="https://www.udap.org/udap-certifications-and-endorsements.html">Client Certifications and Endorsements</a></li>
+            <li><a href="https://www.udap.org/udap-client-authorization-grants.html">Client Authorization Grants using JWTs</a></li>
+            <li><a href="https://www.udap.org/udap-server-metadata.html">Server Metadata</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="https://www.udap.org/#contact">Contact</a></li>
+        <li><a href="https://www.udap.org/#about">About</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="udap-banner">
+    <h2>Tools for Open API Ecosystems</h2>
+  </div>
+
+  <h1 class="spec-title">UDAP vLEI ACDC Client Authentication</h1>
+  <div class="spec-meta"><strong>DRAFT</strong></div>
+
+  <hr/>
+
+  <h2>1. Introduction</h2>
+  <p>
+    The verifiable Legal Entity Identifier (vLEI), developed by the Global Legal Entity Identifier Foundation (GLEIF), offers a path towards a universally recognized,
+    verifiable organizational identifier in healthcare. The LEI system is already used globally in financial markets to identify legal entities. Many healthcare organizations already have an LEI. The vLEI extends this into a digital,
+    cryptographically verifiable credential that binds an organization’s identity to a secure key pair.
+  </p>
+  <p>
+    This specification defines a UDAP client authentication profile for OAuth 2.0 token endpoints that uses
+    <strong>vLEI-chained ACDC credentials</strong>, conveyed via a <strong>CESR-encoded IPEX Grant message</strong>,
+    in place of X.509 certificates or JWT-based client assertions.
+  </p>
+  <p>
+    This profile is modeled directly on the <strong>UDAP JWT-Based Client Authentication</strong> specification and is
+    intended to be semantically equivalent, differing only in the cryptographic assertion format and verification
+    mechanism.  In addition, it provides extended capabilities through the use of KERI identifier delegation.
+  </p>
+  <p>
+    Before granting an access token, the Authorization Server uses standard Public Key Infrastructure tools to validate the digital signature
+    on the IPEX grant submitted by the Client App, and to evaluate the trust chain for the Client App’s vLEI. The access token is granted by the
+    Authentication Server only if the IPEX grant is valid (see Section 6) and the Client App’s vLEI is trusted.
+    This protocol SHALL only be used only by Client Apps that are able to protect the private key used to sign IPEX grants, e.g. confidential
+    clients and certain native device apps.
+  </p>
+  <p>This profile supports client authentication at the token endpoint for both:</p>
+  <ul>
+    <li>Authorization Code Flow</li>
+    <li>Client Credentials Flow</li>
+  </ul>
+
+  <h2>2. Client Assertion Type</h2>
+  <p>This profile defines a new OAuth client assertion type:</p>
+  <pre><code>urn:ietf:params:oauth:client-assertion-type:acdc-vlei</code></pre>
+  <p>
+    This value SHALL be used as the <code>client_assertion_type</code> parameter when the client authenticates to the
+    token endpoint using a vLEI credential.
+  </p>
+
+  <h2>3. Authorization Server Metadata</h2>
+  <p>
+    Authorization Servers supporting this profile SHALL include the following value in the
+    <code>token_endpoint_auth_methods_supported</code> metadata element returned from:
+  </p>
+  <pre><code>GET /.well-known/udap</code></pre>
+
+  <pre><code>{
+  "vlei": [
+    "{holder oobi}",
+    "{issuer oobi",
+    "{vlei oobi}"
+  ]
+}</code></pre>
+
+  <p>
+    If the Authorization Server returns an error code, then the Authorization Server does not support UDAP JWT-based
+    client authentication and the Client App should abort this workflow. The Authorization Server’s vLEI credentials are
+    discovered as part of this metadata request. The Client App MAY examine the vLEI certificates to determine whether the
+    Authorization Server is part of a suitable trust community.
+  </p>
+
+  <h2>4. Client Registration Requirements</h2>
+  <p>Clients intending to use this profile MUST be registered with the Authorization Server to use signed IPEX grants as
+    Authentication Tokens, unless the Client App and Authorization Server support the alternative flow for unregistered
+    client apps described in section 10.1. If the Authorization Server supports UDAP vLEI-based Dynamic Client Registration, the
+    Client App MAY register with the AS using that protocol. If the AS does not support dynamic client registration,
+    it SHOULD supply another method for Client Apps to register their vLEI and get a client ID.
+  </p>
+
+  <p>The Authorization Server SHALL bind the registered <code>client_id</code> to the vLEI holder KERI identifier and will
+    allow identifiers to signed IPEX grant messages, according to policy:</p>
+  <ul>
+    <li>Holder of an accepted vLEI role credential </li>
+    <li>Holder of an accepted ACDC credential chained to an accepted vLEI role credential</li>
+    <li>Holder of an accepted ACDC credential chained to an accepted vLEI legal entity credential</li>
+    <li>A KERI delegated identifier, delegated from any of the above.</li>
+  </ul>
+
+  <h2>5. Overview of Client Authentication</h2>
+  <p>
+    Client authentication is performed by presenting a <strong>client assertion</strong> in the token request. The
+    assertion is:
+  </p>
+  <ul>
+    <li>A <strong>CESR-encoded IPEX Grant message</strong></li>
+    <li>Presenting one or more <strong>vLEI or vLEI-chained ACDC credentials</strong></li>
+    <li>Signed by the <strong>current signing private key(s)</strong> associated with the KERI identifier referenced as the presenter of the IPEX grant.</li>
+  </ul>
+
+  <p>The IPEX Grant message serves the same purpose as the signed JWT in UDAP JWT Client Authentication:</p>
+  <ul>
+    <li>It cryptographically binds the request to the client</li>
+    <li>It proves possession of the client’s private key</li>
+    <li>It conveys identity and authority claims required by the Authorization Server</li>
+  </ul>
+
+  <h2>6. Token Endpoint Request</h2>
+
+  <h3>6.1 General Requirements</h3>
+  <p>When using this profile:</p>
+  <ul>
+    <li>The client <strong>MUST NOT</strong> use HTTP Basic authentication</li>
+    <li>The client <strong>MUST</strong> authenticate using <code>client_assertion_type</code> and <code>client_assertion</code></li>
+    <li>All other OAuth parameters are unchanged from standard OAuth 2.0 and UDAP</li>
+  </ul>
+
+  <h3>6.2 Authorization Code Flow Token Request</h3>
+  <p>The client authenticates to the token endpoint by including the following parameters:</p>
+
+  <pre><code>POST /token
+Host: as.example.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&amp;
+code=AUTHORIZATION_CODE&amp;
+redirect_uri=https://client.example.org/callback&amp;
+client_id=CLIENT_ID&amp;
+client_assertion_type=urn:ietf:params:oauth:client-assertion-type:acdc-vlei&amp;
+client_assertion=-VA0s[... remainder of CESR encoded IPEX grant message omitted for brevity...]</code></pre>
+
+  <h3>6.3 Client Credentials Flow Token Request</h3>
+  <pre><code>POST /token
+Host: as.example.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&amp;
+client_id=CLIENT_ID&amp;
+client_assertion_type=urn:ietf:params:oauth:client-assertion-type:acdc-vlei&amp;
+client_assertion=-VA0s[... remainder of CESR encoded IPEX grant message omitted for brevity...]</code></pre>
+
+  <h2>7. Client Assertion Definition (Normative)</h2>
+
+  <h3>7.1 client_assertion</h3>
+  <p>The <code>client_assertion</code> parameter SHALL contain a <strong>CESR-encoded IPEX Grant message</strong>.</p>
+
+  <p>The IPEX Grant message MUST:</p>
+  <ol>
+    <li>Be encoded using <strong>CESR</strong> as defined by the CESR specification.</li>
+    <li>Convey one or more <strong>ACDC credentials</strong> that:
+      <ul>
+        <li>Are part of the vLEI credential family, and</li>
+        <li>Chain to trust anchors recognized by the Authorization Server.</li>
+      </ul>
+    </li>
+    <li>Reference a KERI identifier controlled by the client.</li>
+    <li>Be cryptographically signed using the private key corresponding to that identifier.</li>
+  </ol>
+
+  <p>The IPEX Grant message MAY:</p>
+  <ol>
+    <li>Contain the <strong>key event log</strong> belonging to the presenter of the IPEX grant message</li>
+    <li>Contain the <strong>key event log</strong> belonging to the holder of the credential</li>
+    <li>Contain the <strong>key event log</strong> belonging to the issuer of the credentials</li>
+    <li>Contain <strong>CESR</strong> artifacts required to resolve any of the credentials (TELs, schema, etc.)</li>
+  </ol>
+
+  <h3>7.2 Required Semantics of the IPEX Grant</h3>
+  <p>The IPEX Grant message MUST reference a vLEI or credential chained to a vLEI that asserts, either directly or via chained credentials:</p>
+
+  <p><em>Note:</em>This section is incomplete and requires further development.</p>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Semantic Requirement</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Client Identity</td>
+          <td>Identifies the legal entity represented by the client (e.g., LEI)</td>
+        </tr>
+        <tr>
+          <td>Client Identifier Binding</td>
+          <td>Binds the assertion to the OAuth <code>client_id</code></td>
+        </tr>
+        <tr>
+          <td>Audience</td>
+          <td>Identifies the Authorization Server token endpoint</td>
+        </tr>
+        <tr>
+          <td>Issuance Time</td>
+          <td>Provides freshness information</td>
+        </tr>
+        <tr>
+          <td>Nonce / Replay Protection</td>
+          <td>Prevents replay within the allowed window</td>
+        </tr>
+        <tr>
+          <td>Grant Context</td>
+          <td>Conveys the purpose of the grant (OAuth client authentication)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    <em>Note:</em> These semantics mirror the required JWT claims (<code>iss</code>, <code>sub</code>, <code>aud</code>,
+    <code>exp</code>, <code>iat</code>, <code>jti</code>) defined in UDAP JWT Client Authentication, but are expressed
+    through ACDC and IPEX constructs rather than JWT claims.
+  </p>
+
+  <h2>8. Authorization Server Validation</h2>
+  <p>Upon receiving a token request using this profile, the Authorization Server MUST:</p>
+  <ol>
+    <li>Verify the <code>client_assertion_type</code> is supported.</li>
+    <li>Parse the <code>client_assertion</code> as a CESR-encoded IPEX Grant message.</li>
+    <li>Validate the IPEX message signature.</li>
+    <li>Validate all enclosed ACDC credentials, including:
+      <ul>
+        <li>Schema validity</li>
+        <li>Chain integrity</li>
+        <li>Issuer authorization</li>
+        <li>Trust anchor policy</li>
+      </ul>
+    </li>
+    <li>Validate freshness and replay protections.</li>
+    <li>Confirm the asserted client identity is authorized to act as the registered <code>client_id</code>.</li>
+    <li>Validate all other OAuth parameters per the selected grant type.</li>
+  </ol>
+
+  <p>Failure at any step MUST result in an <code>invalid_client</code> error.</p>
+
+  <h2>9. Security Considerations</h2>
+  <p>This profile provides security properties equivalent to UDAP JWT Client Authentication, including:</p>
+  <ul>
+    <li>Strong client authentication using asymmetric cryptography</li>
+    <li>Explicit proof-of-possession</li>
+    <li>Audience restriction</li>
+    <li>Replay protection</li>
+    <li>Verifiable organizational identity via vLEI</li>
+  </ul>
+
+  <h2>10. Client Authentication without Pre-registration</h2>
+  <p>10.1 When the identity and privileges of a Client App can be fully determined by an Authorization Server based
+    solely on the attributes listed in the client vLEI credential reference in the IPEX grant, the Authorization
+    Server MAY allow an unregistered Client App to use this authentication protocol to get an access token using
+    the client_credentials grant flow. In this case, as no client_id exists for the unregistered Client App, the
+    corresponding trust community MUST define the set of credential attributes that an AS can use to uniquely
+    identify a Client App, and specify a reserved value for the sub claim (e.g. “unregistered”) that can be included
+    in the IPEX grant to signal to the AS that the subject of the IPEX grant is the unregistered Client App identified by the referenced
+    vLEI credential. This specification does not restrict how the Authorization Server and/or Resource Server communicate
+    to the Client App that this alternate workflow can be used.</p>
+
+  <p><em>Note:</em> that this approach is not suitable for applications utilizing the authorization code flow as there
+    is no mechanism to preregister the Client App’s redirection URI; such unregistered clients SHOULD use the
+    UDAP Dynamic Client Registration Protocol instead.</p>
+
+
+  <h2>11. IANA Considerations (Draft)</h2>
+  <p>This document registers a new OAuth client assertion type:</p>
+  <pre><code>urn:ietf:params:oauth:client-assertion-type:acdc-vlei</code></pre>
+
+  <div class="footer">
+    © 2025 UDAP.org (style-matched draft export)
+  </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

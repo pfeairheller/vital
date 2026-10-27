@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>UDAP vLEI Dynamic Client Registration</title>
+<!-- Bootstrap (close to the look-and-feel used across UDAP.org pages) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<style>
+    body { padding-top: 70px; }
+    .udap-banner { margin-top: 10px; margin-bottom: 10px; }
+    .udap-banner h2 { font-weight: 600; margin-top: 0; }
+    .spec-title { font-size: 34px; font-weight: 700; margin-top: 0; }
+    .spec-meta { color: #555; margin-bottom: 20px; }
+    pre, code { font-family: Menlo, Monaco, Consolas, "Courier New", monospace; }
+    pre { background: #f8f8f8; border: 1px solid #e5e5e5; padding: 12px; }
+    h2 { margin-top: 28px; }
+    h3 { margin-top: 22px; }
+    hr { border-top: 1px solid #e5e5e5; }
+    .footer { margin-top: 40px; padding: 25px 0; color:#666; border-top: 1px solid #eee;}
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+<div class="container">
+<div class="navbar-header">
+<button class="navbar-toggle collapsed" data-target="#udapNavbar" data-toggle="collapse" type="button">
+<span class="sr-only">Toggle navigation</span>
+<span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+</button>
+<a class="navbar-brand" href="#">UDAP</a>
+</div>
+<div class="collapse navbar-collapse" id="udapNavbar">
+<ul class="nav navbar-nav">
+<li class="dropdown">
+<a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+            Profiles <span class="caret"></span>
+</a>
+<ul class="dropdown-menu">
+<li><a href="https://www.udap.org/udap-jwt-client-auth.html">JWT Client Authentication</a></li>
+<li><a href="https://www.udap.org/udap-user-auth.html">Tiered OAuth</a></li>
+<li><a href="https://www.udap.org/udap-dynamic-client-registration.html">Dynamic Client Registration</a></li>
+<li><a href="https://www.udap.org/udap-tls-client-auth.html">TLS Client Authentication</a></li>
+<li><a href="https://www.udap.org/udap-certifications-and-endorsements.html">Client Certifications and Endorsements</a></li>
+<li><a href="https://www.udap.org/udap-client-authorization-grants.html">Client Authorization Grants using JWTs</a></li>
+<li><a href="https://www.udap.org/udap-server-metadata.html">Server Metadata</a></li>
+</ul>
+</li>
+</ul>
+<ul class="nav navbar-nav navbar-right">
+<li><a href="https://www.udap.org/#contact">Contact</a></li>
+<li><a href="https://www.udap.org/#about">About</a></li>
+</ul>
+</div>
+</div>
+</nav>
+<div class="container"><div class="udap-banner">
+<h2>Tools for Open API Ecosystems</h2>
+</div><h1 class="spec-title">UDAP vLEI Dynamic Client Registration</h1><div class="spec-meta"><strong>DRAFT</strong></div><hr/>
+<h2>1. Introduction</h2>
+<p>
+    Registration with an Authorization Server is typically required before a Client Application can access protected resources
+    using the OAuth 2.0 authorization framework. For larger ecosystems with many clients and authorization servers, manual
+    client registration presents a significant barrier. UDAP Dynamic Client Registration addresses this by extending OAuth 2.0
+    Dynamic Client Registration with a trust validation step.
+  </p>
+<p>
+    This specification defines a parallel profile that uses <strong>vLEI-chained ACDC credentials</strong> conveyed via a
+    <strong>CESR-encoded stream</strong> in place of X.509 certificate chains and signed JWT software statements.
+    The Authorization Server permits registration only if the presented assertion is valid and trusted under local trust community
+    policy.
+  </p>
+    <p>This protocol is based upon standard Public Key Infrastructure augmented by the KERI protocol. Before granting
+        registration, the Authorization Server validates the anchor (signed attestation in the issuer's key event log)
+        of the vLEI-chained ACDC credential submitted by the Client App, and evaluates the trust chain for the Client
+        App’s vLEI credential. Client registration is permitted only if the credential is valid and the Client
+        App’s credential is trusted. This protocol MAY be used only by Client Apps that are able to protect the
+        private key used to sign key events, e.g., confidential clients and certain native device apps.</p>
+<p>
+    Sections 1 through 5 define the steps of the workflow. Section 6 defines how previous registrations may be modified or canceled.
+  </p>
+<h2>2. Client checks UDAP support via server metadata</h2>
+<p>The Client App checks that the Authorization Server supports UDAP by retrieving UDAP metadata from:</p>
+<pre><code>GET /.well-known/udap</code></pre>
+<p>
+    This vLEI profile relies on the existing UDAP Server Metadata mechanism and extends it with vLEI/ACDC registration
+    statement capabilities.
+  </p>
+<h3>2.1 Required metadata elements for this profile (normative)</h3>
+<p>An Authorization Server supporting this profile SHALL include (in addition to other applicable UDAP metadata):</p>
+<ul>
+<li><code>vlei</code> (if supporting dynamic registration)</li>
+<li>A metadata key identifying acceptable registration statement formats:</li>
+</ul>
+    <pre><code>{
+  "vlei": [
+    "{holder oobi}",
+    "{issuer oobi",
+    "{vlei oobi}"
+  ]
+}</code></pre>
+    <p>
+        If the Authorization Server returns an error code, then the Authorization Server does not support UDAP vLEI-based
+        client authentication and the Client App should abort this workflow. The Authorization Server’s vLEI credentials are
+        discovered as part of this metadata request. The Client App MAY examine the vLEI certificates to determine whether the
+        Authorization Server is part of a suitable trust community.
+    </p>
+<h2>3. Client prepares a vLEI-chained ACDC credential</h2>
+<p>
+    The Client App prepares an ACDC credential chained from a valid vLEI Legal Entity credential for submission. The
+    credential serves three purposes: it provides the necessary metadata for registration, it establishes the Client
+    App’s control of a private key, and it provides the verifiable credential needed to validate the signature and
+    establish trust.
+  </p>
+<p>
+    In this vLEI profile, the Client App prepares an <strong>ACDC credential chained to a valid vLEI Legal Entity credential</strong> as a:
+  </p>
+<ul>
+<li><strong>CESR-encoded stream</strong>, and</li>
+<li>Embedding one or more <strong>vLEI ACDC credentials</strong> sufficient for the Authorization Server to validate:
+      <ol>
+<li>the client operator identity (legal entity), and</li>
+<li>authority to register this client (role / delegation as required by policy).</li>
+</ol>
+</li>
+</ul>
+<h3>3.1 Required semantic claims (normative)</h3>
+<p>
+    The vLEI-chained ACDC credential MUST carry, in its payload,
+    semantics equivalent to the UDAP DCR credential JWT claims and required registration metadata.
+  </p>
+<p>At minimum, the vLEI credential MUST provide:</p>
+<ul>
+<li><strong>Issuer / Subject identity</strong>: the client operator’s stable identifier (vLEI/KERI AID and/or LEI).</li>
+<li><strong>Audience</strong>: the Authorization Server’s <code>registration_endpoint</code> URI.</li>
+<li><strong>Freshness / anti-replay</strong>: issuance time + expiration (short-lived) and a unique token identifier (replay detection).</li>
+<li><strong>Registration parameters</strong> (see Section 3.2), including
+      <code>client_name</code>, <code>redirect_uris</code>, <code>grant_types</code>, <code>response_types</code>,
+      <code>scope</code> (optional), and <code>token_endpoint_auth_method</code>.
+    </li>
+</ul>
+<h3>3.2 Required registration parameters (normative)</h3>
+<p>The vLEI credential MUST include the client registration metadata required by UDAP DCR, including:</p>
+<ul>
+<li><code>client_name</code></li>
+<li><code>redirect_uris</code> (required if <code>grant_types</code> includes <code>authorization_code</code>)</li>
+<li><code>grant_types</code> (e.g., <code>authorization_code</code>, <code>refresh_token</code>, <code>client_credentials</code>)</li>
+<li><code>response_types</code> (e.g., <code>code</code>; omit for pure <code>client_credentials</code>)</li>
+<li><code>scope</code> (optional)</li>
+<li><code>token_endpoint_auth_method</code></li>
+</ul>
+<p><strong>Integration requirement (normative):</strong></p>
+<p>
+    If the client intends to use the <strong>UDAP vLEI ACDC Client Authentication</strong> profile at the token endpoint,
+    then the credential MUST set:
+  </p>
+<pre><code>token_endpoint_auth_method = "acdc_vlei"</code></pre>
+<h2>4. Client requests registration at the registration endpoint</h2>
+<p>
+    This profile uses, as the payload of its credential, the same top-level JSON structure as UDAP DCR, but changes the <code>software_statement</code> content
+    to be the vLEI-chained ACDC credential CESR encoded string.
+  </p>
+<h3>4.1 Registration request (normative)</h3>
+<p><code>POST</code> to the discovered <code>registration_endpoint</code> with:</p>
+<ul>
+<li><code>software_statement</code>: string, containing the <strong>CESR-encoded vLEI-chained ACDC credential</strong></li>
+<li><code>software_statement_type</code>: REQUIRED, value: <code>urn:ietf:params:oauth:client-assertion-type:acdc-vlei</code></li>
+<li><code>udap</code>: string value <code>"1"</code></li>
+<li><code>credentials</code> (optional)</li>
+</ul>
+<p>Example (non-normative):</p>
+<pre><code>POST /register HTTP/1.1
+Host: as.example.com
+Content-type: application/json
+
+{
+  "software_statement_type": "urn:ietf:params:oauth:client-assertion-type:acdc-vlei",
+  "software_statement": "-VA0s[... remainder of CESR-encoded vLEI-chained ACDC credential omitted for brevity...]",
+  "credentials": [ "... optional ..." ],
+  "udap": "1"
+}</code></pre>
+<h3>4.2 Credentials / endorsements (optional)</h3>
+<p>
+    In this vLEI profile, each entry in <code>credentials</code> SHOULD be:
+  </p>
+<ul>
+<li>a CESR-encoded vLEI ACDC credential that the ACDC credential is chained to</li>
+</ul>
+<h2>5. Authorization Server validates request</h2>
+<h3>5.1 Validate vLEI-chained ACDC credential integrity and proof-of-control (normative)</h3>
+<p>The Authorization Server MUST:</p>
+<ol>
+<li>Parse <code>CESR stream</code> as a vLEI-chainded ACDC credential.</li>
+<li>Validate the ACDC credential message signature/anchor and confirm it proves control of the relevant AID.</li>
+</ol>
+<h3>5.2 Validate vLEI/ACDC chain trust (normative)</h3>
+<p>
+    The Authorization Server MUST validate embedded/referenced ACDC credentials and their chain to trust anchors
+    recognized by the Authorization Server’s trust community policy.
+  </p>
+<h3>5.3 Validate semantic fields (normative)</h3>
+<p>The Authorization Server MUST validate that the ACDC content provides equivalent semantics, including:</p>
+<ul>
+<li>issuer/subject stability (operator identifier)</li>
+<li>audience matches the server <code>registration_endpoint</code></li>
+<li>unexpired, short-lived statement and issuance time window</li>
+<li>replay detection using a unique identifier</li>
+</ul>
+<h3>5.4 Validate registration parameters (normative)</h3>
+<p>
+    The Authorization Server MUST validate the registration parameters embedded in the credential as per
+    dynamic registration rules and local policy. If invalid or required parameters are missing, the request is denied.
+  </p>
+<h3>5.5 Replace prior registrations (optional)</h3>
+<p>
+    The Authorization Server MAY replace prior registrations associated with the same stable vLEI operator identifier.
+  </p>
+<h2>6. Authorization Server responds to request</h2>
+<h3>6.1 Success response (normative)</h3>
+<p>
+    If granted, the Authorization Server returns a registration response including a <code>client_id</code> issued by the AS,
+    the submitted <code>software_statement</code>, and the effective registration parameters.
+  </p>
+<p>Example (non-normative):</p>
+<pre><code>HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "client_id": "example_client_id_issued_by_AS",
+  "software_statement_type": "urn:ietf:params:oauth:client-assertion-type:acdc-vlei",
+  "software_statement": "-VA0s[...omitted...]",
+  "client_name": "Example Client",
+  "redirect_uris": ["https://client.example.org/callback"],
+  "grant_types": ["authorization_code"],
+  "response_types": ["code"],
+  "token_endpoint_auth_method": "acdc_vlei"
+}</code></pre>
+<p><strong>Integration requirement (normative):</strong></p>
+<p>
+    The Authorization Server MUST store enough information from the validated vLEI/ACDC assertion(s) to validate subsequent
+    token endpoint client authentication per <strong>UDAP vLEI ACDC Client Authentication</strong>.
+  </p>
+<h3>6.2 Error response (normative)</h3>
+<p>
+    If denied, the Authorization Server returns an error. This profile reuses UDAP DCR-style error codes:
+  </p>
+<ul>
+<li><code>invalid_software_statement</code>: ACDC/CESR parse failure, invalid signature/anchor, malformed statement</li>
+<li><code>unapproved_software_statement</code>: vLEI/ACDC chain not trusted, required credentials missing, policy failure</li>
+</ul>
+<p>Example (non-normative):</p>
+<pre><code>{ "error": "unapproved_software_statement" }</code></pre>
+<h2>7. Modifying or Cancelling previous registrations</h2>
+<p>
+    This profile uses the same semantics as UDAP DCR, but the stable identifier is the client operator identity established by
+    the vLEI/ACDC chain (e.g., LEI and/or controlling AID) carried in the vLEI credential.
+  </p>
+<h3>7.1 Modify</h3>
+<p>
+    To modify a previous registration, the Client App operator SHALL submit a valid registration request that asserts the same stable
+    operator identity but with updated registration parameters and/or updated credentials.
+  </p>
+<h3>7.2 Cancel </h3>
+<p>
+    <p>(<em>TODO:</em> should consider revocation)</p>
+    To cancel a previous registration, the Client App operator SHALL submit a valid registration request asserting the same stable
+    operator identity but with an empty <code>grant_types</code> array.
+  </p>
+<h2>8. Normative integration with UDAP vLEI ACDC Client Authentication</h2>
+<p>
+    A client registered via this vLEI DCR profile and requesting <code>token_endpoint_auth_method=acdc_vlei</code> MUST authenticate
+    at the token endpoint using:
+  </p>
+<ul>
+<li><code>client_assertion_type=urn:ietf:params:oauth:client-assertion-type:acdc-vlei</code></li>
+<li><code>client_assertion=&lt;CESR-encoded IPEX Grant&gt;</code></li>
+</ul>
+<p>
+    as defined in <strong>UDAP vLEI ACDC Client Authentication</strong>.
+  </p>
+<div class="footer">
+    © 2025 UDAP.org (style-matched draft export)
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
