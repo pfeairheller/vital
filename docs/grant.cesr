@@ -1,0 +1,74 @@
+{
+  "v": "KERI10JSON000bb5_",
+  "t": "exn",
+  "d": "EMubFyZ3PlTBBiQAE5_VhrOIbIX9ZOeKk1vnOYp4wNdr",
+  "i": "ELT-x_NS347dV23id0y0xbUcecwyv9Ecr5t2c5pDNM4G",
+  "rp": "",
+  "p": "",
+  "dt": "2026-10-16T14:10:31.762248+00:00",
+  "r": "/ipex/grant/ex",
+  "q": {},
+  "a": {
+    "m": "",
+    "d": "EH9vL0vuVDdjPx0-SVzm_j0ob_0VOXyxtcqMAo9MnMhZ",
+    "i": "EFuzv-bG0g672ddljEGYl2nRQK9Ao2HZTQeYOT5xCt31",
+    "pd": {
+      "EH9vL0vuVDdjPx0-SVzm_j0ob_0VOXyxtcqMAo9MnMhZ": {
+        "i": "EK4IkBaWvVlkfiscv4w_cOEmGcfnbbumi_Q5fMh_HYO1",
+        "o": "http://127.0.0.1:5642/oobi/EK4IkBaWvVlkfiscv4w_cOEmGcfnbbumi_Q5fMh_HYO1/registrar"
+      },
+      "EMj4mN6-ANKu0yLFjCdc6R5Ut-f_BGUri8EA3E0Rv66y": {
+        "i": "EOLFfbVNcs5nTteFVvNiTZywW2_i-AY6X2Xji9cAZdKT",
+        "o": "http://127.0.0.1:5642/oobi/EOLFfbVNcs5nTteFVvNiTZywW2_i-AY6X2Xji9cAZdKT/registrar"
+      },
+      "EHXC7bFQGyFzF99tu0Lj2mDtBkExPbIziQkzNkFSp7Rk": {
+        "i": "EOLFfbVNcs5nTteFVvNiTZywW2_i-AY6X2Xji9cAZdKT",
+        "o": "http://127.0.0.1:5642/oobi/EOLFfbVNcs5nTteFVvNiTZywW2_i-AY6X2Xji9cAZdKT/registrar"
+      },
+      "EBE38PsL_AtUJdfY7H_VN0Cv9jQSd1t7KjVFLX2C6gmo": {
+        "i": "EK4IkBaWvVlkfiscv4w_cOEmGcfnbbumi_Q5fMh_HYO1",
+        "o": "http://127.0.0.1:5642/oobi/EK4IkBaWvVlkfiscv4w_cOEmGcfnbbumi_Q5fMh_HYO1/registrar"
+      },
+      "ECSwWlVflRchb86OI3V7D_E3Kmsd8BEIHZz7bxiTUQNz": {
+        "i": "EE9CDfykPbT--_v5i8HhSS8qj47YTOrumUkrvxLXSj2R",
+        "o": "http://127.0.0.1:5642/oobi/EE9CDfykPbT--_v5i8HhSS8qj47YTOrumUkrvxLXSj2R/registrar"
+      }
+    }
+  },
+  "e": {
+    "acdc": {
+      "v": "ACDC10JSON000672_",
+      "d": "EH9vL0vuVDdjPx0-SVzm_j0ob_0VOXyxtcqMAo9MnMhZ",
+      "i": "EK4IkBaWvVlkfiscv4w_cOEmGcfnbbumi_Q5fMh_HYO1",
+      "ri": "ELPfFfrQbq65jy4yZsfILwAGJeuW482UsV-at7fFXMTX",
+      "s": "EHfJ563sbivepFRzk506fJenWIeVG2uXdAes8iJhHJan",
+      "a": {
+        "d": "EFOkPVc4MrFdi2Qood1sbUcRZDLKToR4Gs3gDLHojuPY",
+        "i": "ELT-x_NS347dV23id0y0xbUcecwyv9Ecr5t2c5pDNM4G",
+        "dt": "2026-10-16T14:09:13.426127+00:00",
+        "LEI": "549300QKBENKLBXQ8968",
+        "policyDomain": "Office of the National Coordinator for Health Information Technology (ONC)",
+        "policyDomainRole": "Care Coordinator",
+        "endorsementCode": "T-HCO-CC"
+      },
+      "e": {
+        "d": "EJM9zFJG-H4kY0XngFN0TId1Wc-HKuSDs96gdgYgxMd-",
+        "auth": {
+          "n": "EMj4mN6-ANKu0yLFjCdc6R5Ut-f_BGUri8EA3E0Rv66y",
+          "s": "ECoqb1jxC9f9zwh664stMAy6gpnNduvP_3SCQlLvkPAR",
+          "o": "I2I"
+        }
+      },
+      "r": {
+        "d": "EDIai3Wkd-Z_4cezz9nYEcCK3KNH5saLvZoS_84JL6NU",
+        "usageDisclaimer": {
+          "l": "Usage of a valid, unexpired, and non-revoked vLEI Credential, as defined in the associated Ecosystem Governance Framework, does not assert that the Legal Entity is trustworthy, honest, reputable in its business dealings, safe to do business with, or compliant with any laws or that an implied or expressly intended purpose will be fulfilled."
+        },
+        "issuanceDisclaimer": {
+          "l": "All information in a valid, unexpired, and non-revoked vLEI Credential, as defined in the associated Ecosystem Governance Framework, is accurate as of the date the validation process was complete. The vLEI Credential has been issued to the legal entity or person named in the vLEI Credential as the subject; and the qualified vLEI Issuer exercised reasonable care to perform the validation process set forth in the vLEI Ecosystem Governance Framework."
+        }
+      }
+    },
+    "d": "EA9iYadYitQREIvFvRrVdJLEZOltn8zSJumSghlrOtDd"
+  }
+}-FABELT-x_NS347dV23id0y0xbUcecwyv9Ecr5t2c5pDNM4G0AAAAAAAAAAAAAAAAAAAAAAAELT-x_NS347dV23id0y0xbUcecwyv9Ecr5t2c5pDNM4G-AABAAD_FMovkF_aqv3v7aT40jr1mLe9v3ph8H-9M9RB4FOmt2Nsf3AUcBQ5coNvcKJ35d3c7nJmJKPgLHPMQF7s0IUA-LAg4AACA-e-acdc-IABEH9vL0vuVDdjPx0-SVzm_j0ob_0VOXyxtcqMAo9MnMhZ0AAAAAAAAAAAAAAAAAAAAAAAEI_3BtUoHM0jJjM6V4d066iGkW_AUOI1ahRvUHGPgomd

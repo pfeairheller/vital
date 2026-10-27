@@ -217,3 +217,5 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 oobi/
+data/
+scripts/upload_credentials.sh

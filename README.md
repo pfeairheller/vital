@@ -41,6 +41,8 @@ The following table contains the open source repositories available for particip
 Additional resources and documentation can be found at:
 
 - vLEI Credential Hierarchy Graph with Proposed Credentials Inline [docs/Credential-Hierarchy-Graph.md](docs/Credential-Hierarchy-Graph.md)
+- Verifiable Dossier for API Services [docs/Verifiable_Dossier_for_API_Services.md](docs/Verifiable_Dossier_for_API_Services.md)
+- Extended IPEX for Percolated Discovery [docs/Extended_IPEX_Percolated_Discovery.md](docs/Extended_IPEX_Percolated_Discovery.md)
 - KERI Documentation: https://keri.one
 - WebOfTrust GitHub Organization: https://github.com/WebOfTrust
 - GLEIF vLEI
