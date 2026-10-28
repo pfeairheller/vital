@@ -1,4 +1,4 @@
-# MCP Tool Discovery and Authorisation for Agents
+# MCP Tool Discovery and Authorization for Agents
 
 ## Enabling autonomous agents to discover, authenticate, and access MCP tools on behalf of humans using vLEI credentials
 
@@ -6,7 +6,7 @@
 **Date:** 27 October 2026
 **Intended audience:** VITAL Initiative participants; implementers of AI agents, MCP servers, MCP clients, vLEI credential systems, and UDAP authorization servers
 **Relationship to other documents:**
-- Complements [`API_Discovery_and_Authorisation_for_Agents.md`](API_Discovery_and_Authorisation_for_Agents.md) — this specification applies the same patterns to MCP tool access.
+- Complements [`API_Discovery_and_Authorization_for_Agents.md`](API_Discovery_and_Authorization_for_Agents.md) — this specification applies the same patterns to MCP tool access.
 - Extends [`Verifiable_Dossier_for_API_Services.md`](Verifiable_Dossier_for_API_Services.md) with MCP tool manifest verifiability.
 - Uses the UDAP vLEI profiles defined in [`udap-vlei-dynamic-client-registration.html`](udap-vlei-dynamic-client-registration.html) and [`udap-vlei-acdc-client-auth.html`](udap-vlei-acdc-client-auth.html).
 - Integrates with the [A2A Protocol](https://github.com/a2aproject/a2a) for credential requirement propagation.
@@ -897,7 +897,7 @@ When an agent needs both API and MCP tool access from the same organization:
 
 ## 14. References
 
-- [API Discovery and Authorisation for Agents](API_Discovery_and_Authorisation_for_Agents.md)
+- [API Discovery and Authorization for Agents](API_Discovery_and_Authorization_for_Agents.md)
 - [Verifiable Dossier for API Services](Verifiable_Dossier_for_API_Services.md)
 - [UDAP vLEI Dynamic Client Registration](udap-vlei-dynamic-client-registration.html)
 - [UDAP vLEI ACDC Client Authentication](udap-vlei-acdc-client-auth.html)

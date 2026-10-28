@@ -1,4 +1,4 @@
-# API Discovery and Authorisation for Agents
+# API Discovery and Authorization for Agents
 
 ## Enabling autonomous agents to discover, authenticate, and access APIs on behalf of humans using vLEI credentials
 

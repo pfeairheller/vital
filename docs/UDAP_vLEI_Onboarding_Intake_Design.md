@@ -14,13 +14,13 @@
 
 ## 1. Problem statement
 
-UDAP Dynamic Client Registration is synchronous and binary. The current FAST Security IG defines exactly two registration outcomes: `201 Created` on success, or an RFC 7591 §5.2 error on rejection. There is no pending state, no deferred outcome, and no provision for manual review. The IG is also silent on purpose of use, allow lists, and per-purpose authorisation.
+UDAP Dynamic Client Registration is synchronous and binary. The current FAST Security IG defines exactly two registration outcomes: `201 Created` on success, or an RFC 7591 §5.2 error on rejection. There is no pending state, no deferred outcome, and no provision for manual review. The IG is also silent on purpose of use, allow lists, and per-purpose authorization.
 
 This creates three practical problems in payer-to-payer and multi-network exchange:
 
 1. **First contact between two organisations is a business decision, not a technical one.** It involves security review, contract verification, and a judgement about which purposes of use are appropriate. None of that completes inside an HTTP request.
 2. **Because the protocol has no way to say "under review," the honest answer today is silence** — a dropped request and a queued request are indistinguishable to the requester. This is the dominant operational failure mode in practice.
-3. **Purpose of use is where the actual authorisation decision lives**, but neither UDAP nor SMART has a defined slot to express it at registration or at runtime.
+3. **Purpose of use is where the actual authorization decision lives**, but neither UDAP nor SMART has a defined slot to express it at registration or at runtime.
 
 This design closes all three without modifying UDAP's existing behaviour.
 
@@ -273,7 +273,7 @@ On approval, the tuple is written to the allow list for that purpose of use:
 
 ### The allow list is a cached decision, not a standing grant
 
-An LEI can lapse, a vLEI credential can be revoked, and an ECR can expire between approval and use. The authorisation server SHOULD therefore perform a cheap, cached vLEI status check at token issuance rather than trusting the allow list blindly.
+An LEI can lapse, a vLEI credential can be revoked, and an ECR can expire between approval and use. The authorization server SHOULD therefore perform a cheap, cached vLEI status check at token issuance rather than trusting the allow list blindly.
 
 Critically, apply the distinction from the verification taxonomy in §12:
 
